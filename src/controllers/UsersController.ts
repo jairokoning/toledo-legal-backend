@@ -4,6 +4,7 @@ import { hash } from 'bcryptjs';
 import * as Yup from 'yup';
 
 import User from '../models/User';
+import usersView from '../views/users_view';
 
 export default {
   async index(request: Request, response: Response) {
@@ -11,7 +12,7 @@ export default {
 
     const users = await usersRepository.find();
 
-    return response.status(200).json(users);
+    return response.status(200).json(usersView.renderMany(users));
   },
 
   async show(request: Request, response: Response) {
@@ -20,7 +21,7 @@ export default {
 
     const user = await usersRepository.findOneOrFail(id);
 
-    return response.status(200).json(user);
+    return response.status(200).json(usersView.render(user));
   },
 
   async create(request: Request, response: Response) {    
@@ -56,7 +57,7 @@ export default {
 
     await usersRepository.save(user);
 
-    return response.status(201).json(user);
+    return response.status(201).json(usersView.render(user));
   },
 
   async update(request: Request, response: Response) {
@@ -97,7 +98,7 @@ export default {
 
       await usersRepository.save(user);
 
-      return response.status(201).json(user);
+      return response.status(201).json(usersView.render(user));
     } catch (error) {
       return response.status(500).json({ message: 'Internal server error' });
     }
